@@ -12,7 +12,15 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 io.on('connection', (socket) => {
-    console.log('New client connected');
+    console.log('New user connected');
+    socket.emit('welcomeMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chat app'
+    });
+    socket.broadcast.emit('newUserConnected', {
+        from: 'Admin', 
+        text: 'New User join the chat!'
+    });
 
     // socket.emit('newMessage', {
     //     from: 'JMBG',
@@ -22,15 +30,25 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         console.log('New message created:', message);
+
+
+        // Emit to all connected user
         io.emit('newMessage', {
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
-        })
+        });
+
+        // Broadcast, all except the one who emit the message
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected!');
+        console.log('User disconnected!');
     });
 });
 
