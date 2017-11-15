@@ -14,14 +14,19 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New client connected');
 
-    socket.emit('newMessage', {
-        from: 'JMBG',
-        text: 'Hi!!!, I´m over here',
-        createdAt: new Date()
-    });
+    // socket.emit('newMessage', {
+    //     from: 'JMBG',
+    //     text: 'Hi!!!, I´m over here',
+    //     createdAt: new Date()
+    // });
 
     socket.on('createMessage', (message) => {
         console.log('New message created:', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        })
     });
 
     socket.on('disconnect', () => {
