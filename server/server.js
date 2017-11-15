@@ -14,11 +14,20 @@ var io = socketIO(server);
 io.on('connection', (socket) => {
     console.log('New client connected');
 
+    socket.emit('newMessage', {
+        from: 'JMBG',
+        text: 'Hi!!!, I´m over here',
+        createdAt: new Date()
+    });
+
+    socket.on('createMessage', (message) => {
+        console.log('New message created:', message);
+    });
+
     socket.on('disconnect', () => {
         console.log('Client disconnected!');
-    })
+    });
 });
-
 
 app.use(express.static(publicPath));
 server.listen(port, () => {
